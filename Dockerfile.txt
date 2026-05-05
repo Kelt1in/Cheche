@@ -1,9 +1,14 @@
-FROM python:3.11-slim
+# 指定 Python 3.13 作为基础镜像
+FROM python:3.13-slim
+
+# 设置工作目录
 WORKDIR /app
-COPY requirements.txt .
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg libopus0 \
-    && rm -rf /var/lib/apt/lists/*
-RUN pip install --no-cache-dir -r requirements.txt
-COPY bot.py .
+
+# 安装缺失的音频模块，并更新 discord.py
+RUN pip install audioop-lts -U discord.py
+
+# 复制项目所有文件到容器内
+COPY . .
+
+# 启动你的机器人
 CMD ["python", "bot.py"]
